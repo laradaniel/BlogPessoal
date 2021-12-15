@@ -31,14 +31,19 @@ public class UsuarioService {
 
 	public Optional<Usuario> atualizarUsuario(Usuario usuario) {
 
-		
-		if (usuarioRepository.findByUsuario(usuario.getUsuario()).isPresent()) {
+		if (usuarioRepository.findById(usuario.getId()).isPresent()) {
+			
+			Optional<Usuario> buscaUsuario = usuarioRepository.findByUsuario(usuario.getUsuario());
+
+			if (buscaUsuario.isPresent()) {				
+				if (buscaUsuario.get().getId() != usuario.getId())
+					return Optional.empty();
+			}
 			
 			usuario.setSenha(criptografarSenha(usuario.getSenha()));
-			
+
 			return Optional.of(usuarioRepository.save(usuario));
-			
-		}
+		} 
 			
 		return Optional.empty();
 
